@@ -5,6 +5,7 @@ from dash import dcc, html
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
+import dash_mantine_components as dmc
 
 # Load data
 df = pd.read_csv(r'/Users/anisha/Downloads/processed_login_data.csv')
@@ -80,9 +81,21 @@ def create_donut_chart(data, logo_path):
     )
 
     return dcc.Graph(figure=fig,config={
-        'displayModeBar': False})
+        'displayModeBar': False},style={"margin-right": "20px"})
 
 
+def create_donut_chart_with_divider(data, logo_path):
+    # Create a list of components with badges and dividers
+    components = [
+        create_donut_chart(data, logo_path),
+        dmc.Divider(orientation="vertical", style={"height":160}),
+        create_donut_chart(data, logo_path),
+        dmc.Divider(orientation="vertical", style={"height":160}),
+        create_donut_chart(data, logo_path)
+    ]
+
+    # Wrap the list of components in a dmc.Group
+    return dmc.Group(components)
 
 def location_bar_chart(title, x, y, xaxis_title, yaxis_title, logo_path):
     fig = go.Figure(data=go.Bar(x=x, y=y, marker=dict(color=['#5156BD', '#686DCB', '#9295D0', '#C3C6F4',
@@ -151,12 +164,13 @@ app.layout = html.Div(children=[
                     dbc.Row([
                         dbc.Col([
                             html.P("By Age", style={'text-align': 'center','font-size':'20px'}),
-                            create_donut_chart(login_by_age, "assets/age.png")
+                            create_donut_chart_with_divider(login_by_age, "assets/age.png")
                         ], width=4),
+
 
                         dbc.Col([
                             html.P("By Gender", style={'text-align': 'center','font-size':'20px'}),
-                            create_donut_chart(login_by_gender, "assets/gender.png")
+                            create_donut_chart_with_divider(login_by_gender, "assets/gender.png")
                         ], width=4),
 
                         dbc.Col([
@@ -230,7 +244,7 @@ dbc.Col(
                     dbc.Row([
                         dbc.Col([
                             html.P("By Age", style={'text-align': 'center','font-size':'20px'}),
-                            create_donut_chart(login_by_age, "assets/age.png")
+                            create_donut_chart_with_divider(login_by_age, "assets/age.png")
                         ], width=4),
                         dbc.Col([
                             html.P("By Gender", style={'text-align': 'center','font-size':'20px'}),
@@ -300,11 +314,11 @@ dbc.Col(
                     dbc.Row([
                         dbc.Col([
                             html.P("By Age", style={'text-align': 'center','font-size':'20px'}),
-                         create_donut_chart(redemption_by_age, "assets/age.png")],width=4),
+                         create_donut_chart_with_divider(redemption_by_age, "assets/age.png")],width=4),
 
                         dbc.Col([
                             html.P("By Gender",style={'text-align':'center','font-size':'20px'}),
-                        create_donut_chart(redemption_by_gender, "assets/gender.png")], width=4),
+                        create_donut_chart_with_divider(redemption_by_gender, "assets/gender.png")], width=4),
                         dbc.Col([html.P("By Category",style={'text-align':'center','font-size':'20px'}),
                         create_donut_chart(redemption_by_category,"assets/platform.png")], width=4),
                     ]),
@@ -339,5 +353,5 @@ dbc.Col(
     ], style={'padding': '15px 50px 15px 10px'})
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=5000)
+    app.run_server(debug=True, port=3000)
 
